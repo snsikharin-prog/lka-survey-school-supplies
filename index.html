@@ -177,10 +177,27 @@
         <table class="w-full text-left border-collapse whitespace-nowrap">
           <thead>
             <tr class="bg-purple-100 text-purple-800 border-b-2 border-purple-200">
-              <th class="p-3 w-16 text-center font-semibold text-sm">เลขที่</th>
-              <th class="p-3 w-32 font-semibold text-sm">รหัสประจำตัว</th>
-              <th class="p-3 font-semibold text-sm">ชื่อ-นามสกุล</th>
-              <th class="p-3 w-72 font-semibold text-sm text-center">ความต้องการ</th>
+              <th class="p-3 w-16 text-center font-semibold text-sm align-middle">เลขที่</th>
+              <th class="p-3 w-32 font-semibold text-sm align-middle">รหัสประจำตัว</th>
+              <th class="p-3 font-semibold text-sm align-middle">ชื่อ-นามสกุล</th>
+              <th class="p-3 font-semibold text-sm text-center">
+                <div class="mb-2 text-base">ความต้องการ</div>
+                <!-- ส่วนตัวเลือก "เลือกทั้งหมด" -->
+                <div class="flex justify-center gap-2 text-xs font-normal">
+                  <label class="flex items-center gap-1 cursor-pointer bg-white px-2 py-1 rounded shadow-sm hover:bg-purple-50 transition border border-purple-200">
+                    <input type="radio" name="selectAllPkg" value="ชุดที่ 1" onclick="selectAllPackages('ชุดที่ 1')" class="accent-purple-600 w-3 h-3"> 
+                    <span>เลือกชุด 1 ทั้งหมด</span>
+                  </label>
+                  <label class="flex items-center gap-1 cursor-pointer bg-white px-2 py-1 rounded shadow-sm hover:bg-purple-50 transition border border-purple-200">
+                    <input type="radio" name="selectAllPkg" value="ชุดที่ 2" onclick="selectAllPackages('ชุดที่ 2')" class="accent-purple-600 w-3 h-3"> 
+                    <span>เลือกชุด 2 ทั้งหมด</span>
+                  </label>
+                  <label class="flex items-center gap-1 cursor-pointer bg-white px-2 py-1 rounded shadow-sm hover:bg-purple-50 transition border border-purple-200">
+                    <input type="radio" name="selectAllPkg" value="ชุดที่ 3" onclick="selectAllPackages('ชุดที่ 3')" class="accent-purple-600 w-3 h-3"> 
+                    <span>เลือกชุด 3 ทั้งหมด</span>
+                  </label>
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody id="studentTbody" class="divide-y divide-gray-200">
@@ -386,7 +403,6 @@
         showCustomAlert("กำลังอัปเดตข้อมูลจากฐานข้อมูล...", "กำลังโหลด", "info");
       }
       
-      // สั่งโหลดข้อมูลสรุปชีต Report ไปพร้อมกัน
       fetchReportSummary();
 
       try {
@@ -411,7 +427,6 @@
       }
     }
 
-    // ฟังก์ชันดึงข้อมูลชีต Report มาใส่ตารางซ้ายมือ
     async function fetchReportSummary() {
       const tbody = document.getElementById("reportSummaryTbody");
       tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-indigo-500 animate-pulse">กำลังโหลดข้อมูล...</td></tr>`;
@@ -428,7 +443,6 @@
           
           tbody.innerHTML = "";
           json.data.forEach(row => {
-            // เช็คเปอร์เซ็นต์ว่าเต็ม 100 หรือไม่
             let numPercent = parseFloat(row.percent) || 0;
             let percentClass = numPercent >= 100 ? 'text-emerald-600' : 'text-orange-500';
 
@@ -441,7 +455,6 @@
             `;
           });
         } else {
-          // แจ้งเตือนหากยังไม่ได้อัปเดต Code.gs 
           tbody.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-orange-500 text-xs">โปรดเพิ่มฟังก์ชันดึง Report ใน Code.gs ก่อน</td></tr>`;
         }
       } catch (e) {
@@ -560,12 +573,20 @@
       } else if (tab === 'report') {
         document.getElementById("tab-report").classList.remove("hidden");
         document.getElementById("nav-report").className = `bg-yellow-400 hover:bg-yellow-500 text-purple-900 border-yellow-400 font-bold ${btnClasses}`;
-        // อัปเดตข้อมูลตารางด้านซ้ายมือตอนเปิดแท็บ
         fetchReportSummary();
       } else if (tab === 'coupon') {
         document.getElementById("tab-coupon").classList.remove("hidden");
         document.getElementById("nav-coupon").className = `bg-yellow-400 hover:bg-yellow-500 text-purple-900 border-yellow-400 font-bold ${btnClasses}`;
       }
+    }
+
+    // ฟังก์ชันสำหรับเลือกชุดอุปกรณ์พร้อมกันทุกคน
+    function selectAllPackages(pkgValue) {
+      if (!currentStudents || currentStudents.length === 0) return;
+      currentStudents.forEach(st => {
+        const radio = document.querySelector(`input[name="pkg_${st.id}"][value="${pkgValue}"]`);
+        if (radio) radio.checked = true;
+      });
     }
 
     async function fetchStudents() {
@@ -581,6 +602,9 @@
       const tbody = document.getElementById("studentTbody");
       tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-blue-500 font-medium animate-pulse">กำลังโหลดข้อมูล...</td></tr>`;
       document.getElementById("statsCard").classList.add("hidden");
+
+      // เคลียร์ปุ่ม Select All ตอนดึงรายชื่อใหม่
+      document.querySelectorAll('input[name="selectAllPkg"]').forEach(r => r.checked = false);
 
       try {
         const url = `${GAS_URL}?action=getStudents&classLevel=${encodeURIComponent(classLevel)}&room=${encodeURIComponent(room)}`;
@@ -665,7 +689,7 @@
         if (result.success) {
           showCustomAlert(`บันทึกข้อมูลสำเร็จ! จำนวน ${result.count} รายการ`, "สำเร็จ", "success");
           fetchStudents(); 
-          fetchReportSummary(); // รีเฟรชตารางสรุปเมื่อบันทึกเสร็จ
+          fetchReportSummary(); 
         } else if (result.isDuplicate) {
           showCustomAlert(result.message, "พบข้อมูลซ้ำ", "error");
         } else {
