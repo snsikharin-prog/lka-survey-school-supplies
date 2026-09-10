@@ -27,7 +27,7 @@
       }
       body { background-color: white !important; }
       header, footer, .print-hidden { display: none !important; }
-      section { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; }
+      section { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; background: transparent !important; }
       
       /* พิมพ์หน้ารายงาน */
       body.print-report #tab-survey, body.print-report #tab-coupon { display: none !important; }
@@ -40,18 +40,18 @@
       body.print-coupon #tab-survey, body.print-coupon #tab-report { display: none !important; }
       body.print-coupon #couponPrintArea { 
         display: grid !important; 
-        grid-template-columns: repeat(3, 1fr) !important; /* 3 คอลัมน์ */
-        grid-auto-rows: 39mm !important; /* บังคับความสูงเพื่อให้ได้ 7 แถวพอดี (39*7=273mm พอดีกับหน้า A4) */
+        grid-template-columns: repeat(3, 1fr) !important; 
+        grid-auto-rows: 39mm !important; 
         gap: 2mm !important; 
         width: 100%; 
       }
       body.print-coupon .coupon-card { 
         page-break-inside: avoid; 
         break-inside: avoid;
-        border: 1px solid #a855f7 !important; /* ปรับกรอบคูปองเวลาพิมพ์ให้เล็กลง */
+        border: 1px solid #a855f7 !important; 
         -webkit-print-color-adjust: exact; 
         print-color-adjust: exact;
-        padding: 2mm !important; /* บีบ padding ภายในให้สุด */
+        padding: 2mm !important; 
         min-height: 0 !important; 
         height: 100% !important;
         display: flex !important;
@@ -59,10 +59,7 @@
         justify-content: space-between !important;
       }
 
-      /* ซ่อนพื้นหลังลายน้ำเพื่อประหยัดหมึกและเพิ่มพื้นที่ */
       body.print-coupon .coupon-card > .absolute { display: none !important; }
-      
-      /* ย่อระยะห่างและขนาดอักษรในคูปองเพื่อยัดลงกล่อง 39mm */
       body.print-coupon .coupon-card * { line-height: 1.1 !important; }
       body.print-coupon .coupon-card .pb-2 { padding-bottom: 2px !important; }
       body.print-coupon .coupon-card .mb-3 { margin-bottom: 2px !important; }
@@ -74,17 +71,12 @@
       body.print-coupon .coupon-card .border-t-2 { border-top-width: 1px !important; }
       body.print-coupon .coupon-card .border-b-2 { border-bottom-width: 1px !important; }
       
-      /* ปรับขนาดตัวอักษรสำหรับพิมพ์ */
       body.print-coupon .coupon-card h4 { font-size: 11px !important; font-weight: bold !important; margin: 0 !important; padding: 0 !important; }
       body.print-coupon .coupon-card p.text-xs { font-size: 8px !important; margin: 0 !important; }
       body.print-coupon .coupon-card .text-base { font-size: 10px !important; padding-bottom: 1px !important; margin-bottom: 1px !important; }
       body.print-coupon .coupon-card .text-sm { font-size: 9px !important; }
       body.print-coupon .coupon-card .text-xs { font-size: 8px !important; }
-      
-      /* ปรับกล่องความต้องการ Package */
       body.print-coupon .coupon-card .p-2.rounded-lg { padding: 1px 2px !important; font-size: 9px !important; border-width: 1px !important; border-radius: 4px !important; }
-      
-      /* ปรับเส้นช่องลายเซ็น */
       body.print-coupon .coupon-card .h-6 { height: 10px !important; margin-bottom: 2px !important; }
     }
   </style>
@@ -108,10 +100,10 @@
     </div>
   </header>
 
-  <main class="container mx-auto px-4 lg:px-8 mt-8 max-w-6xl">
+  <main class="container mx-auto px-4 lg:px-8 mt-8 max-w-7xl">
     
     <!-- แท็บ 1: แบบสำรวจข้อมูล -->
-    <section id="tab-survey" class="bg-white p-6 md:p-8 rounded-2xl shadow-lg border-t-4 border-purple-600">
+    <section id="tab-survey" class="bg-white p-6 md:p-8 rounded-2xl shadow-lg border-t-4 border-purple-600 max-w-6xl mx-auto">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b pb-4 print-hidden">
         <div class="flex items-center gap-2">
           <div class="bg-purple-100 p-2 rounded-lg text-purple-700">
@@ -204,60 +196,99 @@
       </div>
     </section>
 
-    <!-- แท็บ 2: รายงานผล -->
-    <section id="tab-report" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-lg border-t-4 border-blue-500">
-      
-      <div class="print-hidden">
-        <div class="flex items-center gap-2 mb-6 border-b pb-4">
-          <h2 class="text-xl md:text-2xl font-bold text-blue-800">รายงานผลการเลือกอุปกรณ์การเรียน</h2>
+    <!-- แท็บ 2: รายงานผล (แยกเป็น 2 ฝั่ง ซ้าย/ขวา) -->
+    <section id="tab-report" class="hidden">
+      <div class="flex flex-col lg:flex-row gap-6">
+        
+        <!-- ฝั่งซ้าย: การ์ดสรุปข้อมูลจากชีต Report -->
+        <div class="w-full lg:w-1/3 bg-white p-6 rounded-2xl shadow-lg border-t-4 border-indigo-500 print-hidden h-fit">
+          <div class="flex items-center gap-2 mb-4 border-b pb-3">
+            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-700">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-indigo-800">สรุปความคืบหน้า (รายห้อง)</h3>
+          </div>
+          
+          <div class="overflow-y-auto no-scrollbar max-h-[500px] border border-slate-100 rounded-lg">
+            <table class="w-full text-sm text-left border-collapse whitespace-nowrap">
+              <thead class="sticky top-0 bg-indigo-50">
+                <tr class="text-indigo-800 border-b border-indigo-100">
+                  <th class="p-2 font-semibold">ชั้น/ห้อง</th>
+                  <th class="p-2 font-semibold text-center">ตอบ/ทั้งหมด</th>
+                  <th class="p-2 font-semibold text-right">ร้อยละ</th>
+                </tr>
+              </thead>
+              <tbody id="reportSummaryTbody" class="divide-y divide-gray-100">
+                <tr><td colspan="3" class="text-center p-6 text-gray-400">กำลังโหลดข้อมูล...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-4 flex justify-center">
+            <button onclick="fetchReportSummary()" class="text-xs flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-full transition shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              โหลดข้อมูลซ้ำ
+            </button>
+          </div>
         </div>
-        <!-- ค้นหารายงานด้วย Dropdown -->
-        <div class="flex flex-col md:flex-row gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <div class="flex-1">
-            <label class="block text-xs font-semibold mb-1 text-slate-500">ระดับชั้น</label>
-            <select id="rptClass" onchange="onClassChange('report')" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 bg-white outline-none">
-              <option value="">-- เลือกระดับชั้น --</option>
-            </select>
-          </div>
-          <div class="flex-1">
-            <label class="block text-xs font-semibold mb-1 text-slate-500">ห้อง</label>
-            <select id="rptRoom" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 bg-white outline-none">
-              <option value="">-- เลือกห้อง --</option>
-            </select>
-          </div>
-          <div class="flex items-end gap-2 flex-wrap md:flex-nowrap">
-            <button onclick="loadReport()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md w-full md:w-auto transition">ดึงรายงาน</button>
-            <button onclick="printReport()" class="bg-slate-700 hover:bg-slate-800 text-white px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md w-full md:w-auto transition">พิมพ์รายงาน</button>
-          </div>
-        </div>
-      </div>
 
-      <!-- พื้นที่สำหรับแสดงตารางและพิมพ์รายงาน -->
-      <div id="reportPrintArea">
-        <div class="hidden print:block text-center mb-6">
-          <h3 class="text-2xl font-bold text-slate-800">รายงานผลการเลือกอุปกรณ์การเรียน</h3>
-          <p class="text-lg text-slate-600 mt-2" id="reportPrintHeader">ชั้น ... ห้อง ...</p>
+        <!-- ฝั่งขวา: ค้นหารายงานแบบเดิม -->
+        <div class="w-full lg:w-2/3 bg-white p-6 md:p-8 rounded-2xl shadow-lg border-t-4 border-blue-500">
+          <div class="print-hidden">
+            <div class="flex items-center gap-2 mb-6 border-b pb-4">
+              <h2 class="text-xl md:text-2xl font-bold text-blue-800">รายงานผลการเลือกอุปกรณ์</h2>
+            </div>
+            <!-- ค้นหารายงานด้วย Dropdown -->
+            <div class="flex flex-col md:flex-row gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div class="flex-1">
+                <label class="block text-xs font-semibold mb-1 text-slate-500">ระดับชั้น</label>
+                <select id="rptClass" onchange="onClassChange('report')" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 bg-white outline-none">
+                  <option value="">-- เลือกระดับชั้น --</option>
+                </select>
+              </div>
+              <div class="flex-1">
+                <label class="block text-xs font-semibold mb-1 text-slate-500">ห้อง</label>
+                <select id="rptRoom" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 bg-white outline-none">
+                  <option value="">-- เลือกห้อง --</option>
+                </select>
+              </div>
+              <div class="flex items-end gap-2 flex-wrap md:flex-nowrap">
+                <button onclick="loadReport()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md w-full md:w-auto transition">ดึงรายงาน</button>
+                <button onclick="printReport()" class="bg-slate-700 hover:bg-slate-800 text-white px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md w-full md:w-auto transition">พิมพ์รายงาน</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- พื้นที่สำหรับแสดงตารางและพิมพ์รายงาน -->
+          <div id="reportPrintArea">
+            <div class="hidden print:block text-center mb-6">
+              <h3 class="text-2xl font-bold text-slate-800">รายงานผลการเลือกอุปกรณ์การเรียน</h3>
+              <p class="text-lg text-slate-600 mt-2" id="reportPrintHeader">ชั้น ... ห้อง ...</p>
+            </div>
+            <div class="overflow-x-auto no-scrollbar border rounded-lg shadow-sm">
+              <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                  <tr class="bg-blue-100 text-blue-800 border-b-2 border-blue-200">
+                    <th class="p-3 text-center w-16 font-semibold text-sm">เลขที่</th>
+                    <th class="p-3 w-32 font-semibold text-sm">รหัส</th>
+                    <th class="p-3 font-semibold text-sm">ชื่อ-นามสกุล</th>
+                    <th class="p-3 font-semibold text-sm text-center">ชุดที่เลือก</th>
+                  </tr>
+                </thead>
+                <tbody id="reportTbody" class="divide-y divide-gray-200">
+                  <tr><td colspan="4" class="text-center p-8 text-gray-400 text-sm">กรุณาระบุชั้น/ห้อง แล้วกดดึงรายงาน</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <div class="overflow-x-auto no-scrollbar border rounded-lg shadow-sm">
-          <table class="w-full text-left border-collapse whitespace-nowrap">
-            <thead>
-              <tr class="bg-blue-100 text-blue-800 border-b-2 border-blue-200">
-                <th class="p-3 text-center w-16 font-semibold text-sm">เลขที่</th>
-                <th class="p-3 w-32 font-semibold text-sm">รหัส</th>
-                <th class="p-3 font-semibold text-sm">ชื่อ-นามสกุล</th>
-                <th class="p-3 font-semibold text-sm text-center">ชุดที่เลือก</th>
-              </tr>
-            </thead>
-            <tbody id="reportTbody" class="divide-y divide-gray-200">
-              <tr><td colspan="4" class="text-center p-8 text-gray-400 text-sm">กรุณาระบุชั้น/ห้อง แล้วกดดึงรายงาน</td></tr>
-            </tbody>
-          </table>
-        </div>
+
       </div>
     </section>
 
     <!-- แท็บ 3: สำหรับออกคูปอง (Admin) -->
-    <section id="tab-coupon" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-lg border-t-4 border-yellow-400">
+    <section id="tab-coupon" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-lg border-t-4 border-yellow-400 max-w-6xl mx-auto">
       
       <div class="print-hidden">
         <div class="flex items-center gap-2 mb-6 border-b pb-4">
@@ -285,14 +316,14 @@
       </div>
 
       <!-- พื้นที่สำหรับแสดงคูปองหน้าจอและพิมพ์ -->
-      <div id="couponPrintArea" class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+      <div id="couponPrintArea" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         <div class="col-span-full text-center p-8 text-gray-400 text-sm border-2 border-dashed rounded-lg">กรุณาระบุชั้น/ห้อง แล้วกดดึงข้อมูลสร้างคูปอง</div>
       </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="mt-12 text-center text-sm font-bold text-slate-500 pb-6 border-t border-slate-200 pt-6">
+  <footer class="mt-12 text-center text-sm font-bold text-slate-500 pb-6 border-t border-slate-200 pt-6 print-hidden">
     กลุ่มบริหารงบประมาณ-โรงเรียนหลวงพ่อปานคลองด่านอนุสรณ์
   </footer>
 
@@ -323,9 +354,8 @@
   <!-- โค้ด JavaScript -->
   <script>
     // ==========================================
-    // นำ Web App URL ของท่านมาใส่ที่นี่
-    // ==========================================
     const GAS_URL = "https://script.google.com/macros/s/AKfycbykOd0bAXYIcVpPDYof-XCEbFxQ9Pw93iZQBmzEsULyX8XpZiZKgEJ-rdRsWRUWlPPHrQ/exec";
+    // ==========================================
 
     let globalClassesData = {};
     let advisorsData = [];
@@ -333,7 +363,6 @@
 
     window.onload = () => { refreshData(true); };
 
-    // อัปเดต Dropdown ในทุกๆ แท็บ
     function populateDropdowns() {
       ['selClass', 'rptClass', 'cpnClass'].forEach(classId => {
         const classSel = document.getElementById(classId);
@@ -346,7 +375,6 @@
         
         if(currentVal && globalClassesData[currentVal]) {
           classSel.value = currentVal;
-          // สั่งอัปเดตห้องอัตโนมัติ
           let tabName = classId === 'selClass' ? 'survey' : (classId === 'rptClass' ? 'report' : 'coupon');
           onClassChange(tabName);
         }
@@ -357,6 +385,10 @@
       if(!isInitial) {
         showCustomAlert("กำลังอัปเดตข้อมูลจากฐานข้อมูล...", "กำลังโหลด", "info");
       }
+      
+      // สั่งโหลดข้อมูลสรุปชีต Report ไปพร้อมกัน
+      fetchReportSummary();
+
       try {
         const res = await fetch(`${GAS_URL}?action=getInitialData`);
         const json = await res.json();
@@ -379,7 +411,44 @@
       }
     }
 
-    // เมื่อเลือกระดับชั้น ให้อัปเดตห้อง ของแท็บนั้นๆ
+    // ฟังก์ชันดึงข้อมูลชีต Report มาใส่ตารางซ้ายมือ
+    async function fetchReportSummary() {
+      const tbody = document.getElementById("reportSummaryTbody");
+      tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-indigo-500 animate-pulse">กำลังโหลดข้อมูล...</td></tr>`;
+      
+      try {
+        const res = await fetch(`${GAS_URL}?action=getReportSummary`);
+        const json = await res.json();
+        
+        if (json.success) {
+          if (!json.data || json.data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-gray-500">ยังไม่มีข้อมูลในชีต Report</td></tr>`;
+            return;
+          }
+          
+          tbody.innerHTML = "";
+          json.data.forEach(row => {
+            // เช็คเปอร์เซ็นต์ว่าเต็ม 100 หรือไม่
+            let numPercent = parseFloat(row.percent) || 0;
+            let percentClass = numPercent >= 100 ? 'text-emerald-600' : 'text-orange-500';
+
+            tbody.innerHTML += `
+              <tr class="hover:bg-indigo-100 transition">
+                <td class="p-2 text-slate-700 font-medium whitespace-nowrap">${row.classLevel}/${row.room}</td>
+                <td class="p-2 text-center text-slate-600 font-mono text-xs">${row.answered} / ${row.total}</td>
+                <td class="p-2 text-right font-bold ${percentClass}">${row.percent}%</td>
+              </tr>
+            `;
+          });
+        } else {
+          // แจ้งเตือนหากยังไม่ได้อัปเดต Code.gs 
+          tbody.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-orange-500 text-xs">โปรดเพิ่มฟังก์ชันดึง Report ใน Code.gs ก่อน</td></tr>`;
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-red-500 text-sm">การเชื่อมต่อล้มเหลว</td></tr>`;
+      }
+    }
+
     function onClassChange(tab) {
       let classSelId, roomSelId;
       if (tab === 'survey') { classSelId = 'selClass'; roomSelId = 'selRoom'; }
@@ -397,7 +466,6 @@
         });
       }
 
-      // ถ้าจำค่าห้องได้ ให้เซ็ตกลับ (มีประโยชน์ตอน refresh ข้อมูล)
       if (currentRoomVal && Array.from(selRoom.options).some(opt => opt.value === currentRoomVal)) {
         selRoom.value = currentRoomVal;
       }
@@ -405,7 +473,6 @@
       if (tab === 'survey') onRoomChange(); 
     }
 
-    // เมื่อเลือกห้อง (เฉพาะหน้าแบบสำรวจที่จะอัปเดตครูที่ปรึกษา)
     function onRoomChange() {
       const c = document.getElementById("selClass").value;
       const r = document.getElementById("selRoom").value;
@@ -430,7 +497,6 @@
       }
     }
 
-    // ฟังก์ชันสั่งพิมพ์
     function printReport() {
       const c = document.getElementById("rptClass").value;
       const r = document.getElementById("rptRoom").value;
@@ -451,7 +517,6 @@
       window.print();
     }
 
-    // Modal Manager
     function showCustomAlert(msg, title = "แจ้งเตือน", type = "info") {
       document.getElementById('alertTitle').innerText = title;
       document.getElementById('alertMessage').innerText = msg;
@@ -463,7 +528,6 @@
     }
     function closeAlertModal() { document.getElementById('alertModal').classList.add('hidden'); }
     
-    // Admin Modal
     function openAdminModal() {
       document.getElementById("adminPwd").value = '';
       document.getElementById("adminModal").classList.remove("hidden");
@@ -480,7 +544,6 @@
     }
     document.getElementById("adminPwd").addEventListener("keyup", function(e) { if(e.key === "Enter") checkAdminPassword(); });
 
-    // เปลี่ยนแท็บเมนู
     function switchTab(tab) {
       document.getElementById("tab-survey").classList.add("hidden");
       document.getElementById("tab-report").classList.add("hidden");
@@ -497,13 +560,14 @@
       } else if (tab === 'report') {
         document.getElementById("tab-report").classList.remove("hidden");
         document.getElementById("nav-report").className = `bg-yellow-400 hover:bg-yellow-500 text-purple-900 border-yellow-400 font-bold ${btnClasses}`;
+        // อัปเดตข้อมูลตารางด้านซ้ายมือตอนเปิดแท็บ
+        fetchReportSummary();
       } else if (tab === 'coupon') {
         document.getElementById("tab-coupon").classList.remove("hidden");
         document.getElementById("nav-coupon").className = `bg-yellow-400 hover:bg-yellow-500 text-purple-900 border-yellow-400 font-bold ${btnClasses}`;
       }
     }
 
-    // ดึงรายชื่อ (แท็บ 1)
     async function fetchStudents() {
       const classLevel = document.getElementById("selClass").value;
       const room = document.getElementById("selRoom").value;
@@ -570,7 +634,6 @@
       }
     }
 
-    // บันทึกข้อมูล (แท็บ 1)
     async function saveData() {
       const recordsToSave = [];
       const advisor = document.getElementById("selAdvisor").value;
@@ -602,6 +665,7 @@
         if (result.success) {
           showCustomAlert(`บันทึกข้อมูลสำเร็จ! จำนวน ${result.count} รายการ`, "สำเร็จ", "success");
           fetchStudents(); 
+          fetchReportSummary(); // รีเฟรชตารางสรุปเมื่อบันทึกเสร็จ
         } else if (result.isDuplicate) {
           showCustomAlert(result.message, "พบข้อมูลซ้ำ", "error");
         } else {
@@ -615,7 +679,6 @@
       }
     }
 
-    // ดึงรายงาน (แท็บ 2)
     async function loadReport() {
       const c = document.getElementById("rptClass").value;
       const r = document.getElementById("rptRoom").value;
@@ -624,7 +687,6 @@
       const tbody = document.getElementById("reportTbody");
       tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-blue-500 font-medium animate-pulse">กำลังค้นหาข้อมูล...</td></tr>`;
       
-      // อัปเดตหัวตารางสำหรับเวลาพิมพ์
       document.getElementById("reportPrintHeader").innerText = `ชั้น ${c} ห้อง ${r}`;
 
       try {
@@ -656,7 +718,6 @@
       }
     }
 
-    // ดึงคูปอง (แท็บ 3)
     async function generateCoupons() {
       const c = document.getElementById("cpnClass").value;
       const r = document.getElementById("cpnRoom").value;
