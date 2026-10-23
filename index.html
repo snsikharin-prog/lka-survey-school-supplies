@@ -17,27 +17,37 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
+    #printAllArea { display: none; }
+
     /* -------------------------------------
        ตั้งค่าการพิมพ์ (Print CSS) แยกส่วน
     -------------------------------------- */
     @media print {
       @page { 
         size: A4 portrait; 
-        margin: 5mm; 
+        margin: 10mm; 
       }
       body { background-color: white !important; }
       header, footer, .print-hidden { display: none !important; }
       section { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; background: transparent !important; }
       
-      /* พิมพ์หน้ารายงาน */
-      body.print-report #tab-survey, body.print-report #tab-coupon { display: none !important; }
+      /* พิมพ์หน้ารายงานห้องเดียว */
+      body.print-report #tab-survey, body.print-report #tab-coupon, body.print-report #printAllArea { display: none !important; }
       body.print-report #reportPrintArea { display: block !important; width: 100%; }
       body.print-report table { border-collapse: collapse; width: 100%; }
       body.print-report th, body.print-report td { border: 1px solid #cbd5e1 !important; color: #000 !important; padding: 6px !important; }
       body.print-report th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       
-      /* พิมพ์หน้าคูปอง - บังคับ 3 คอลัมน์ 7 แถว */
-      body.print-coupon #tab-survey, body.print-coupon #tab-report { display: none !important; }
+      /* พิมพ์รายงานทั้งหมด */
+      body.print-all-reports #tab-survey, body.print-all-reports #tab-report, body.print-all-reports #tab-coupon { display: none !important; }
+      body.print-all-reports #printAllArea { display: block !important; width: 100%; }
+      body.print-all-reports .page-break { break-after: page; page-break-after: always; padding-bottom: 20px; }
+      body.print-all-reports table { border-collapse: collapse; width: 100%; margin-bottom: 15px; }
+      body.print-all-reports th, body.print-all-reports td { border: 1px solid #cbd5e1 !important; color: #000 !important; padding: 6px !important; }
+      body.print-all-reports th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      /* พิมพ์หน้าคูปอง */
+      body.print-coupon #tab-survey, body.print-coupon #tab-report, body.print-coupon #printAllArea { display: none !important; }
       body.print-coupon #couponPrintArea { 
         display: grid !important; 
         grid-template-columns: repeat(3, 1fr) !important; 
@@ -58,26 +68,13 @@
         flex-direction: column !important;
         justify-content: space-between !important;
       }
-
       body.print-coupon .coupon-card > .absolute { display: none !important; }
       body.print-coupon .coupon-card * { line-height: 1.1 !important; }
-      body.print-coupon .coupon-card .pb-2 { padding-bottom: 2px !important; }
-      body.print-coupon .coupon-card .mb-3 { margin-bottom: 2px !important; }
-      body.print-coupon .coupon-card .mb-4 { margin-bottom: 2px !important; }
-      body.print-coupon .coupon-card .pt-3 { padding-top: 2px !important; }
-      body.print-coupon .coupon-card .mt-3 { margin-top: 2px !important; }
-      body.print-coupon .coupon-card .gap-y-2 { gap: 1px !important; }
-      body.print-coupon .coupon-card .gap-4 { gap: 4px !important; }
-      body.print-coupon .coupon-card .border-t-2 { border-top-width: 1px !important; }
-      body.print-coupon .coupon-card .border-b-2 { border-bottom-width: 1px !important; }
-      
       body.print-coupon .coupon-card h4 { font-size: 11px !important; font-weight: bold !important; margin: 0 !important; padding: 0 !important; }
       body.print-coupon .coupon-card p.text-xs { font-size: 8px !important; margin: 0 !important; }
       body.print-coupon .coupon-card .text-base { font-size: 10px !important; padding-bottom: 1px !important; margin-bottom: 1px !important; }
       body.print-coupon .coupon-card .text-sm { font-size: 9px !important; }
-      body.print-coupon .coupon-card .text-xs { font-size: 8px !important; }
       body.print-coupon .coupon-card .p-2.rounded-lg { padding: 1px 2px !important; font-size: 9px !important; border-width: 1px !important; border-radius: 4px !important; }
-      body.print-coupon .coupon-card .h-6 { height: 10px !important; margin-bottom: 2px !important; }
     }
   </style>
 </head>
@@ -93,9 +90,9 @@
         ระบบสำรวจความต้องการอุปกรณ์การเรียน <br>ภาคเรียนที่ 2 ปีการศึกษา 2569
       </h1>
       <div class="flex flex-wrap justify-center gap-3">
-        <button onclick="switchTab('survey')" id="nav-survey" class="bg-yellow-400 hover:bg-yellow-500 text-purple-900 px-5 py-2.5 rounded-full text-sm font-bold shadow transition-all duration-200 transform hover:scale-105">บันทึกข้อมูล</button>
+        <button onclick="switchTab('survey')" id="nav-survey" class="bg-yellow-400 hover:bg-yellow-500 text-purple-900 px-5 py-2.5 rounded-full text-sm font-bold shadow transition-all duration-200 transform hover:scale-105 border border-yellow-400">บันทึกข้อมูล</button>
         <button onclick="switchTab('report')" id="nav-report" class="bg-purple-600 hover:bg-purple-700 text-white border border-purple-500 px-5 py-2.5 rounded-full text-sm font-semibold shadow transition-all duration-200 transform hover:scale-105">รายงานสรุป</button>
-        <button onclick="openAdminModal()" id="nav-coupon" class="bg-blue-600 hover:bg-blue-700 text-white border border-blue-500 px-5 py-2.5 rounded-full text-sm font-semibold shadow transition-all duration-200 transform hover:scale-105">สร้างคูปอง (เจ้าหน้าที่)</button>
+        <button onclick="handleAdminClick()" id="nav-admin" class="bg-blue-600 hover:bg-blue-700 text-white border border-blue-500 px-5 py-2.5 rounded-full text-sm font-semibold shadow transition-all duration-200 transform hover:scale-105">เข้าสู่ระบบ Admin</button>
       </div>
     </div>
   </header>
@@ -213,13 +210,12 @@
       </div>
     </section>
 
-    <!-- แท็บ 2: รายงานผล (แยกเป็น 2 ฝั่ง ซ้าย/ขวา) -->
+    <!-- แท็บ 2: รายงานผล -->
     <section id="tab-report" class="hidden">
       <div class="flex flex-col lg:flex-row gap-6">
         
         <!-- ฝั่งซ้าย: รวมการ์ด 2 ใบ (ยอดรวมชุด และ สรุปรายห้อง) -->
         <div class="w-full lg:w-1/3 flex flex-col gap-6 print-hidden">
-          
           <!-- การ์ด 1: สรุปยอดรวมชุดอุปกรณ์ -->
           <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-fuchsia-500 h-fit">
             <div class="flex items-center gap-2 mb-4 border-b pb-3">
@@ -285,9 +281,18 @@
         <!-- ฝั่งขวา: ค้นหารายงานตารางรายบุคคล -->
         <div class="w-full lg:w-2/3 bg-white p-6 md:p-8 rounded-2xl shadow-lg border-t-4 border-blue-500">
           <div class="print-hidden">
-            <div class="flex items-center gap-2 mb-6 border-b pb-4">
+            <div class="flex items-center justify-between mb-6 border-b pb-4">
               <h2 class="text-xl md:text-2xl font-bold text-blue-800">รายงานผลการเลือกอุปกรณ์รายบุคคล</h2>
+              
+              <!-- ปุ่มพิมพ์ทั้งหมดสำหรับ Admin -->
+              <button id="btnPrintAll" onclick="printAllReports()" class="hidden bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md transition flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                พิมพ์รายงานทั้งหมด (PDF)
+              </button>
             </div>
+
             <!-- ค้นหารายงานด้วย Dropdown -->
             <div class="flex flex-col md:flex-row gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
               <div class="flex-1">
@@ -304,12 +309,12 @@
               </div>
               <div class="flex items-end gap-2 flex-wrap md:flex-nowrap">
                 <button onclick="loadReport()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md w-full md:w-auto transition">ดึงรายงาน</button>
-                <button onclick="printReport()" class="bg-slate-700 hover:bg-slate-800 text-white px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md w-full md:w-auto transition">พิมพ์รายงาน</button>
+                <button onclick="printReport()" class="bg-slate-700 hover:bg-slate-800 text-white px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md w-full md:w-auto transition">พิมพ์รายงานห้องนี้</button>
               </div>
             </div>
           </div>
 
-          <!-- พื้นที่สำหรับแสดงตารางและพิมพ์รายงาน -->
+          <!-- พื้นที่สำหรับแสดงตารางและพิมพ์รายงานรายห้อง -->
           <div id="reportPrintArea">
             <div class="hidden print:block text-center mb-6">
               <h3 class="text-2xl font-bold text-slate-800">รายงานผลการเลือกอุปกรณ์การเรียน</h3>
@@ -338,10 +343,9 @@
 
     <!-- แท็บ 3: สำหรับออกคูปอง (Admin) -->
     <section id="tab-coupon" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-lg border-t-4 border-yellow-400 max-w-6xl mx-auto">
-      
       <div class="print-hidden">
         <div class="flex items-center gap-2 mb-6 border-b pb-4">
-          <h2 class="text-xl md:text-2xl font-bold text-yellow-700">สร้างคูปองรับอุปกรณ์การเรียน</h2>
+          <h2 class="text-xl md:text-2xl font-bold text-yellow-700">แผงควบคุมระบบ / สร้างคูปองรับอุปกรณ์การเรียน</h2>
         </div>
         <!-- ค้นหาคูปองด้วย Dropdown -->
         <div class="flex flex-col md:flex-row gap-3 mb-8 bg-slate-50 p-4 rounded-xl border border-slate-200">
@@ -371,12 +375,15 @@
     </section>
   </main>
 
+  <!-- พื้นที่สำหรับสร้างรายงานรวมก่อนพิมพ์ทั้งหมด -->
+  <div id="printAllArea" class="hidden"></div>
+
   <!-- Footer -->
   <footer class="mt-12 text-center text-sm font-bold text-slate-500 pb-6 border-t border-slate-200 pt-6 print-hidden">
     กลุ่มบริหารงบประมาณ-โรงเรียนหลวงพ่อปานคลองด่านอนุสรณ์
   </footer>
 
-  <!-- Modal กลางหน้าเว็บ สำหรับแจ้งเตือน -->
+  <!-- Modal แจ้งเตือน -->
   <div id="alertModal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden z-[100] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
     <div id="alertModalCard" class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full border-t-4 border-blue-500 transform scale-100 transition-transform text-center relative overflow-hidden">
       <h3 id="alertTitle" class="font-bold text-xl text-slate-800 mb-3">แจ้งเตือน</h3>
@@ -387,12 +394,12 @@
     </div>
   </div>
 
-  <!-- Modal สำหรับ Admin (รหัสผ่านป้องกัน) -->
+  <!-- Modal เข้าสู่ระบบ Admin -->
   <div id="adminModal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full border-t-4 border-yellow-500">
       <h3 class="font-bold text-xl text-slate-800 mb-2">ยืนยันสิทธิ์ Admin</h3>
-      <p class="text-sm text-slate-500 mb-4">กรุณากรอกรหัสผ่านเพื่อเข้าสู่ระบบสร้างคูปอง</p>
-      <input type="password" id="adminPwd" placeholder="รหัสผ่าน" class="w-full border border-gray-300 rounded-lg p-3 mb-6 text-sm outline-none">
+      <p class="text-sm text-slate-500 mb-4">กรุณากรอกรหัสผ่านเพื่อเข้าสู่ระบบผู้ดูแล</p>
+      <input type="password" id="adminPwd" placeholder="รหัสผ่าน" class="w-full border border-gray-300 rounded-lg p-3 mb-6 text-sm outline-none focus:ring-2 focus:ring-yellow-500">
       <div class="flex justify-end gap-3">
         <button onclick="closeAdminModal()" class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg">ยกเลิก</button>
         <button onclick="checkAdminPassword()" class="px-5 py-2.5 text-sm font-bold bg-yellow-500 hover:bg-yellow-600 text-slate-900 rounded-lg shadow">เข้าสู่ระบบ</button>
@@ -403,12 +410,14 @@
   <!-- โค้ด JavaScript -->
   <script>
     // ==========================================
+    // ใส่ URL ของ Web App หลังจาก Deploy ที่นี่
     const GAS_URL = "https://script.google.com/macros/s/AKfycbykOd0bAXYIcVpPDYof-XCEbFxQ9Pw93iZQBmzEsULyX8XpZiZKgEJ-rdRsWRUWlPPHrQ/exec";
     // ==========================================
 
     let globalClassesData = {};
     let advisorsData = [];
     let currentStudents = [];
+    let isAdminLoggedIn = false; // ตัวแปรเก็บสถานะ Admin
 
     window.onload = () => { refreshData(true); };
 
@@ -435,7 +444,6 @@
         showCustomAlert("กำลังอัปเดตข้อมูลจากฐานข้อมูล...", "กำลังโหลด", "info");
       }
       
-      // สั่งโหลดข้อมูลสรุปชีต Report ไปพร้อมกัน
       fetchReportSummary();
 
       try {
@@ -460,7 +468,6 @@
       }
     }
 
-    // ดึงข้อมูลชีต Report มาใส่ตารางซ้ายมือ และตัวเลขยอดรวมแต่ละชุด
     async function fetchReportSummary() {
       const tbody = document.getElementById("reportSummaryTbody");
       tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-indigo-500 animate-pulse">กำลังโหลดข้อมูล...</td></tr>`;
@@ -470,13 +477,10 @@
         const json = await res.json();
         
         if (json.success) {
-          
-          // อัปเดตตัวเลขยอดรวมทั้ง 3 ชุด
           document.getElementById("sumPkg1").innerText = json.packages.pkg1;
           document.getElementById("sumPkg2").innerText = json.packages.pkg2;
           document.getElementById("sumPkg3").innerText = json.packages.pkg3;
 
-          // อัปเดตตารางสรุปรายห้อง
           if (!json.data || json.data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-gray-500">ยังไม่มีข้อมูลในชีต Report</td></tr>`;
             return;
@@ -537,7 +541,6 @@
       document.getElementById("studentTbody").innerHTML = `<tr><td colspan="4" class="text-center p-8 text-gray-400 text-sm">กรุณากดปุ่ม "ดึงรายชื่อ"</td></tr>`;
       document.getElementById("btnSave").classList.add("hidden");
       
-      // ปลดเลือก Select All ด้วย
       document.querySelectorAll('input[name="selectAllPkg"]').forEach(r => r.checked = false);
 
       if (c && r) {
@@ -554,13 +557,56 @@
       }
     }
 
+    // ----------------------------------------------------
+    // ฟังก์ชันระบบสิทธิ์ Admin
+    // ----------------------------------------------------
+    function handleAdminClick() {
+      if (isAdminLoggedIn) {
+        switchTab('coupon');
+      } else {
+        openAdminModal();
+      }
+    }
+    
+    function openAdminModal() {
+      document.getElementById("adminPwd").value = '';
+      document.getElementById("adminModal").classList.remove("hidden");
+      setTimeout(() => document.getElementById("adminPwd").focus(), 100);
+    }
+    
+    function closeAdminModal() { document.getElementById("adminModal").classList.add("hidden"); }
+    
+    function checkAdminPassword() {
+      const pwd = document.getElementById("adminPwd").value;
+      if (pwd === "Admin12345" || pwd === "admin12345") {
+        isAdminLoggedIn = true; // บันทึกว่า Login สำเร็จ
+        closeAdminModal();
+        
+        // เปลี่ยนแปลงปุ่ม Header
+        const adminBtn = document.getElementById("nav-admin");
+        adminBtn.innerText = "จัดการคูปอง (Admin)";
+        
+        // แสดงปุ่มพิมพ์ทั้งหมดในหน้ารายงาน
+        document.getElementById("btnPrintAll").classList.remove("hidden");
+
+        showCustomAlert("เข้าสู่ระบบผู้ดูแลสำเร็จ คุณสามารถใช้งานเมนูต่างๆ ได้ทันที", "สำเร็จ", "success");
+        setTimeout(() => switchTab("coupon"), 1500);
+      } else {
+        showCustomAlert("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง", "ปฏิเสธการเข้าถึง", "error");
+      }
+    }
+    document.getElementById("adminPwd").addEventListener("keyup", function(e) { if(e.key === "Enter") checkAdminPassword(); });
+
+    // ----------------------------------------------------
+    // ฟังก์ชันพิมพ์ (ห้องเดียว, รวม, คูปอง)
+    // ----------------------------------------------------
     function printReport() {
       const c = document.getElementById("rptClass").value;
       const r = document.getElementById("rptRoom").value;
       if (!c || !r) return showCustomAlert("กรุณาดึงรายงานก่อนสั่งพิมพ์", "คำเตือน", "error");
       
       document.body.classList.add('print-report');
-      document.body.classList.remove('print-coupon');
+      document.body.classList.remove('print-coupon', 'print-all-reports');
       window.print();
     }
     
@@ -570,8 +616,97 @@
       if (!c || !r) return showCustomAlert("กรุณาดึงข้อมูลสร้างคูปองก่อนสั่งพิมพ์", "คำเตือน", "error");
 
       document.body.classList.add('print-coupon');
-      document.body.classList.remove('print-report');
+      document.body.classList.remove('print-report', 'print-all-reports');
       window.print();
+    }
+    
+    // ฟังก์ชันพิมพ์รายงานทั้งหมดรวม
+    async function printAllReports() {
+      showCustomAlert("ระบบกำลังรวบรวมข้อมูลทั้งหมดเพื่อจัดเตรียมหน้าพิมพ์ กรุณารอสักครู่...", "กำลังโหลด", "info");
+      
+      try {
+        const res = await fetch(`${GAS_URL}?action=getAllReports`);
+        const data = await res.json();
+        
+        if (data.success) {
+          const area = document.getElementById("printAllArea");
+          let html = "";
+          const keys = Object.keys(data.grouped).sort(); // เรียงลำดับตามระดับชั้น/ห้อง
+          
+          keys.forEach((key) => {
+            const roomData = data.grouped[key];
+            if (roomData.students.length === 0) return;
+            
+            html += `
+              <div class="page-break">
+                <div class="text-center mb-6">
+                  <h3 class="text-2xl font-bold">รายงานผลการเลือกอุปกรณ์การเรียน</h3>
+                  <p class="text-lg mt-2">ชั้น ${roomData.classLevel} ห้อง ${roomData.room}</p>
+                </div>
+                <table class="w-full text-left border-collapse whitespace-nowrap text-sm">
+                  <thead>
+                    <tr>
+                      <th class="p-2 text-center w-16">เลขที่</th>
+                      <th class="p-2 w-32">รหัสประจำตัว</th>
+                      <th class="p-2">ชื่อ-นามสกุล</th>
+                      <th class="p-2 text-center">ชุดที่เลือก</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+            
+            roomData.students.forEach(st => {
+              html += `
+                <tr>
+                  <td class="p-2 text-center">${st.no}</td>
+                  <td class="p-2 font-mono">${st.id}</td>
+                  <td class="p-2">${st.name}</td>
+                  <td class="p-2 text-center">${st.package}</td>
+                </tr>
+              `;
+            });
+            
+            html += `
+                  </tbody>
+                </table>
+                <div class="mt-4 text-right font-bold text-sm bg-slate-100 p-2 rounded">
+                  สรุปผลรวมห้อง ${roomData.room}: ชุด 1 = ${roomData.totals["ชุดที่ 1"]} | ชุด 2 = ${roomData.totals["ชุดที่ 2"]} | ชุด 3 = ${roomData.totals["ชุดที่ 3"]}
+                </div>
+              </div>
+            `;
+          });
+          
+          // สรุปภาพรวมหน้าสุดท้าย
+          html += `
+            <div class="page-break w-full text-center pt-10">
+              <h3 class="text-2xl font-bold mb-8">สรุปยอดรวมอุปกรณ์การเรียนทั้งหมด (ทุกระดับชั้น)</h3>
+              <div class="inline-block border-2 border-slate-600 p-8 rounded-xl shadow-sm text-left">
+                <p class="text-xl mb-4 flex justify-between gap-10"><strong>ชุดที่ 1:</strong> <span>${data.summary["ชุดที่ 1"]} ชุด</span></p>
+                <p class="text-xl mb-4 flex justify-between gap-10"><strong>ชุดที่ 2:</strong> <span>${data.summary["ชุดที่ 2"]} ชุด</span></p>
+                <p class="text-xl mb-4 flex justify-between gap-10"><strong>ชุดที่ 3:</strong> <span>${data.summary["ชุดที่ 3"]} ชุด</span></p>
+                <div class="border-t-2 border-slate-500 mt-6 pt-6 text-xl font-extrabold flex justify-between gap-10">
+                  <span>รวมผู้ตอบแบบสำรวจทั้งสิ้น:</span>
+                  <span>${data.summary["ชุดที่ 1"] + data.summary["ชุดที่ 2"] + data.summary["ชุดที่ 3"]} รายการ</span>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          area.innerHTML = html;
+          
+          closeAlertModal();
+          
+          // ซ่อน Element อื่น ๆ และสั่ง Print หน้าเฉพาะ
+          document.body.classList.add('print-all-reports');
+          document.body.classList.remove('print-report', 'print-coupon');
+          setTimeout(() => { window.print(); }, 500); // ดีเลย์เล็กน้อยเพื่อให้เบราว์เซอร์เตรียม DOM เสร็จ
+          
+        } else {
+          showCustomAlert("ไม่สามารถประมวลผลข้อมูลรายงานทั้งหมดได้", "ข้อผิดพลาด", "error");
+        }
+      } catch (e) {
+        showCustomAlert("การร้องขอข้อมูลทั้งหมดล้มเหลว", "ข้อผิดพลาด", "error");
+      }
     }
 
     function showCustomAlert(msg, title = "แจ้งเตือน", type = "info") {
@@ -584,22 +719,6 @@
       document.getElementById('alertModal').classList.remove('hidden');
     }
     function closeAlertModal() { document.getElementById('alertModal').classList.add('hidden'); }
-    
-    function openAdminModal() {
-      document.getElementById("adminPwd").value = '';
-      document.getElementById("adminModal").classList.remove("hidden");
-      setTimeout(() => document.getElementById("adminPwd").focus(), 100);
-    }
-    function closeAdminModal() { document.getElementById("adminModal").classList.add("hidden"); }
-    function checkAdminPassword() {
-      if (document.getElementById("adminPwd").value === "admin12345") {
-        closeAdminModal();
-        switchTab("coupon");
-      } else {
-        showCustomAlert("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง", "ปฏิเสธการเข้าถึง", "error");
-      }
-    }
-    document.getElementById("adminPwd").addEventListener("keyup", function(e) { if(e.key === "Enter") checkAdminPassword(); });
 
     function switchTab(tab) {
       document.getElementById("tab-survey").classList.add("hidden");
@@ -609,7 +728,7 @@
       const btnClasses = "px-5 py-2.5 rounded-full text-sm shadow transition-all duration-200 transform hover:scale-105 border";
       document.getElementById("nav-survey").className = `bg-purple-600 hover:bg-purple-700 text-white border-purple-500 font-semibold ${btnClasses}`;
       document.getElementById("nav-report").className = `bg-purple-600 hover:bg-purple-700 text-white border-purple-500 font-semibold ${btnClasses}`;
-      document.getElementById("nav-coupon").className = `bg-blue-600 hover:bg-blue-700 text-white border-blue-500 font-semibold ${btnClasses}`;
+      document.getElementById("nav-admin").className = `bg-blue-600 hover:bg-blue-700 text-white border-blue-500 font-semibold ${btnClasses}`;
 
       if (tab === 'survey') {
         document.getElementById("tab-survey").classList.remove("hidden");
@@ -620,11 +739,10 @@
         fetchReportSummary();
       } else if (tab === 'coupon') {
         document.getElementById("tab-coupon").classList.remove("hidden");
-        document.getElementById("nav-coupon").className = `bg-yellow-400 hover:bg-yellow-500 text-purple-900 border-yellow-400 font-bold ${btnClasses}`;
+        document.getElementById("nav-admin").className = `bg-yellow-400 hover:bg-yellow-500 text-purple-900 border-yellow-400 font-bold ${btnClasses}`;
       }
     }
 
-    // ฟังก์ชันสำหรับเลือกชุดอุปกรณ์พร้อมกันทุกคน
     function selectAllPackages(pkgValue) {
       if (!currentStudents || currentStudents.length === 0) return;
       currentStudents.forEach(st => {
@@ -647,7 +765,6 @@
       tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-blue-500 font-medium animate-pulse">กำลังโหลดข้อมูล...</td></tr>`;
       document.getElementById("statsCard").classList.add("hidden");
 
-      // เคลียร์ปุ่ม Select All ตอนดึงรายชื่อใหม่
       document.querySelectorAll('input[name="selectAllPkg"]').forEach(r => r.checked = false);
 
       try {
@@ -733,7 +850,7 @@
         if (result.success) {
           showCustomAlert(`บันทึกข้อมูลสำเร็จ! จำนวน ${result.count} รายการ`, "สำเร็จ", "success");
           fetchStudents(); 
-          fetchReportSummary(); // รีเฟรชตารางสรุปเมื่อบันทึกเสร็จ
+          fetchReportSummary(); 
         } else if (result.isDuplicate) {
           showCustomAlert(result.message, "พบข้อมูลซ้ำ", "error");
         } else {
